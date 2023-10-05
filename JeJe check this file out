@@ -1,0 +1,188 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <list>
+#include <vector>
+
+class Calculator {
+private:
+	std::list<std::string> history;
+	double result;
+
+public:
+	Calculator() : result(0.0) {}
+
+	void add(std::vector<double> numbers) {
+    	double sum = 0.0;
+    	for (const double& num : numbers) {
+        	sum += num;
+    	}
+    	result = sum;
+    	history.push_back("Addition: " + formatNumbers(numbers));
+	}
+
+	void subtract(std::vector<double> numbers) {
+    	double diff = numbers[0];
+    	for (size_t i = 1; i < numbers.size(); ++i) {
+        	diff -= numbers[i];
+    	}
+    	result = diff;
+    	history.push_back("Subtraction: " + formatNumbers(numbers));
+	}
+
+	void multiply(std::vector<double> numbers) {
+    	double product = 1.0;
+    	for (const double& num : numbers) {
+        	product *= num;
+    	}
+    	result = product;
+    	history.push_back("Multiplication: " + formatNumbers(numbers));
+	}
+
+	void divide(std::vector<double> numbers) {
+    	for (const double& num : numbers) {
+        	if (num == 0.0) {
+            	std::cout << "Error: Division by zero!" << std::endl;
+            	return;
+        	}
+    	}
+
+    	double quotient = numbers[0];
+    	for (size_t i = 1; i < numbers.size(); ++i) {
+        	quotient /= numbers[i];
+    	}
+    	result = quotient;
+    	history.push_back("Division: " + formatNumbers(numbers));
+	}
+
+	void sqrt(double num) {
+    	if (num >= 0.0) {
+        	result = std::sqrt(num);
+        	history.push_back("Square Root: sqrt(" + std::to_string(num) + ")");
+    	} else {
+        	std::cout << "Error: Square root of a negative number is not defined." << std::endl;
+    	}
+	}
+
+	void exp(double base, double exponent) {
+    	result = std::pow(base, exponent);
+    	history.push_back("Exponentiation: " + std::to_string(base) + " ^ " + std::to_string(exponent));
+	}
+
+	void sin(double degrees) {
+    	result = std::sin(degrees * M_PI / 180.0);
+    	history.push_back("Sine: sin(" + std::to_string(degrees) + " degrees)");
+	}
+
+	void cos(double degrees) {
+    	result = std::cos(degrees * M_PI / 180.0);
+    	history.push_back("Cosine: cos(" + std::to_string(degrees) + " degrees)");
+	}
+
+	void tan(double degrees) {
+    	result = std::tan(degrees * M_PI / 180.0);
+    	history.push_back("Tangent: tan(" + std::to_string(degrees) + " degrees)");
+	}
+
+	void showHistory() {
+    	std::cout << "Calculator History:" << std::endl;
+    	for (const std::string& entry : history) {
+        	std::cout << entry << std::endl;
+    	}
+	}
+
+	double getResult() const {
+    	return result;
+	}
+
+private:
+	std::string formatNumbers(const std::vector<double>& numbers) {
+    	std::string formatted;
+    	for (size_t i = 0; i < numbers.size(); ++i) {
+        	formatted += std::to_string(numbers[i]);
+        	if (i < numbers.size() - 1) {
+            	formatted += ", ";
+        	}
+    	}
+    	return formatted;
+	}
+};
+
+int main() {
+	Calculator calc;
+	double num;
+	int choice;
+
+	std::cout << "Welcome to the scientific calculator, developed by Katherine !!ლ(◉‿◉ ლ)" << std::endl;
+
+	std::vector<double> numbers; // Declare numbers vector here
+
+	do {
+    	std::cout << "1. Addition" << std::endl;
+    	std::cout << "2. Subtraction" << std::endl;
+    	std::cout << "3. Multiplication" << std::endl;
+    	std::cout << "4. Division" << std::endl;
+    	std::cout << "5. Square Root" << std::endl;
+    	std::cout << "6. Exponentiation" << std::endl;
+    	std::cout << "7. Sine" << std::endl;
+    	std::cout << "8. Cosine" << std::endl;
+    	std::cout << "9. Tangent" << std::endl;
+    	std::cout << "10. Show History" << std::endl;
+    	std::cout << "11. Quit" << std::endl;
+    	std::cout << "Enter your choice (1-11): ";
+    	std::cin >> choice;
+
+    	switch (choice) {
+        	case 1:
+        	case 2:
+        	case 3:
+        	case 4:
+            	numbers.clear(); // Clear the vector before reusing it
+            	std::cout << "Enter numbers (enter 0 to finish): ";
+            	while (true) {
+                	std::cin >> num;
+                	if (num == 0.0) {
+                    	break;
+                	}
+                	numbers.push_back(num);
+            	}
+            	if (choice == 1) calc.add(numbers);
+            	else if (choice == 2) calc.subtract(numbers);
+            	else if (choice == 3) calc.multiply(numbers);
+            	else if (choice == 4) calc.divide(numbers);
+            	std::cout << "Result: " << calc.getResult() << std::endl;
+            	break;
+        	case 5:
+        	case 6:
+        	case 7:
+        	case 8:
+        	case 9:
+            	std::cout << "Enter a value: ";
+            	std::cin >> num;
+            	if (choice == 5) calc.sqrt(num);
+            	else if (choice == 6) {
+                	double exponent;
+                	std::cout << "Enter exponent: ";
+                	std::cin >> exponent;
+                	calc.exp(num, exponent);
+            	}
+            	else if (choice == 7) calc.sin(num);
+            	else if (choice == 8) calc.cos(num);
+            	else if (choice == 9) calc.tan(num);
+            	std::cout << "Result: " << calc.getResult() << std::endl;
+            	break;
+        	case 10:
+            	calc.showHistory();
+            	break;
+        	case 11:
+            	std::cout << "Goodbye!" << std::endl;
+            	break;
+        	default:
+            	std::cout << "Invalid choice!" << std::endl;
+            	break;
+    	}
+
+	} while (choice != 11);
+
+	return 0;
+}
